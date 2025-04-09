@@ -7,6 +7,9 @@ var messageForm = document.querySelector('#messageForm');
 var messageInput = document.querySelector('#message');
 var messageArea = document.querySelector('#messageArea');
 var connectingElement = document.querySelector('.connecting');
+var ul = document.getElementById("active-users-list");
+var li = document.createElement("li");
+
 
 var stompClient = null;
 var username = null;
@@ -42,6 +45,10 @@ function onConnected() {
         JSON.stringify({sender: username, type: 'JOIN'})
     )
 
+
+    li.textContent = username;
+    ul.appendChild(li);
+
     connectingElement.classList.add('hidden');
 }
 
@@ -50,7 +57,6 @@ function onError(error) {
     connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
     connectingElement.style.color = 'red';
 }
-
 
 function sendMessage(event) {
     var messageContent = messageInput.value.trim();
@@ -65,7 +71,6 @@ function sendMessage(event) {
     }
     event.preventDefault();
 }
-
 
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
@@ -93,17 +98,15 @@ function onMessageReceived(payload) {
         usernameElement.appendChild(usernameText);
         messageElement.appendChild(usernameElement);
     }
-
     var textElement = document.createElement('p');
     var messageText = document.createTextNode(message.content);
+
     textElement.appendChild(messageText);
-
     messageElement.appendChild(textElement);
-
     messageArea.appendChild(messageElement);
+
     messageArea.scrollTop = messageArea.scrollHeight;
 }
-
 
 function getAvatarColor(messageSender) {
     var hash = 0;
